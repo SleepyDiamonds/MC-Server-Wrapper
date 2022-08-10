@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="d-grid gap-3">
+      {% for server in userdata["servers"] %}
+        <div class="p-2 bg-light border rounded"><a href="/server/{{ loop.index0 }}">{{server["hostname"]}}</a></div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+</body>
+</html>

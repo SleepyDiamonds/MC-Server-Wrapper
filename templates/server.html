@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- <h1>{{ server["hostname"] }}</h1> -->
+  
+  <div class="container rounded overflow-auto fs-6" id="logs" style="background-color: black; color: white; height: 500px;"></div>
+
+{% endblock %}
+
+{% block script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+  <script type="text/javascript" charset="utf-8">
+    var logElement = document.getElementById("logs");
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/logs');
+
+    //socket.on('connect', function(logline) {
+    //  console.log(logline);
+    //});
+    
+    // receive logs from server
+    socket.on('message', (type, data) => {
+      console.log(type, data);
+      if (type == "lastlogs") {
+        for (const line of data) {
+          var logLine = document.createElement("p");
+          logLine.className = "log-line";
+          logLine.innerText = line;
+          logElement.appendChild(logLine);
+        }
+      } else if (type == "lastlogline") {
+        var logLine = document.createElement("p");
+        logLine.className = "log-line";
+        logLine.innerText = data;
+        logElement.appendChild(logLine);
+      }
+    });
+  </script>
+{% endblock %}
