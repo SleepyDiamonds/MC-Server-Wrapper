@@ -1,6 +1,7 @@
 {
     "configuration": {
-        "log-read-limit": 25
+        "log-read-limit": 25,
+        "log-count-wait": 2
     },
     "servers": [
         {
