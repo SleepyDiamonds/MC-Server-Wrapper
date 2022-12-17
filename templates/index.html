@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Servers:</h1>
+<ul>
+    {% for server in servers %}
+    <li><a href="{{ url_for('server_page', index=server.index) }}">{{ server.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
