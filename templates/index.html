@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Servers:</h1>
+<h1>Index Page.</h1>
+<hr>
+<h2>Servers:</h2>
 <ul>
     {% for server in servers %}
     <li><a href="{{ url_for('server_page', index=server.index) }}">{{ server.name }}</a></li>
+    {% endfor %}
+</ul>
+<h2>Subprocesses running:</h2>
+<ul>
+    {% for subprocess in subprocesses %}
+    <li><code>({{ loop.index0 }}|PROCESS) server_index: {{ subprocess.server_index }}</code></li>
     {% endfor %}
 </ul>
 {% endblock %}
