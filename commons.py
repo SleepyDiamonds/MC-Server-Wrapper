@@ -7,8 +7,8 @@ import subprocess
 FILE_SERVERS_LOCATION = "servers.json"
 FILE_CONFIG_LOCATION = "config.json"
 
-
 JVM_STARTUP_FLAGS = "java -Xms%s -Xmx%s -XX:+UseG1GC -jar server.jar nogui" 
+
 mcserver_subprocesses = []
 
 def loadServers():
@@ -57,8 +57,7 @@ def startServer(index):
 
         # Return True because server has started successfully.
         return True
-
-    except Exception as e:
+    except:
         # Return False because error occured.
         return False
 
