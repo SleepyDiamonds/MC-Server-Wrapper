@@ -8,6 +8,10 @@
     <li><a href="{{ url_for('server_page', index=server.index) }}">{{ server.name }}</a></li>
     {% endfor %}
 </ul>
+<a href="{{ url_for('new_server_page') }}" class="btn btn-primary d-inline-flex flex-row justify-content-center align-items-center gap-2">
+    <i class="bi bi-plus-circle"></i>
+    New Server
+</a>
 <h2>Subprocesses running:</h2>
 <ul>
     {% for subprocess in subprocesses %}

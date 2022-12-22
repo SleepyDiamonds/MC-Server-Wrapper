@@ -3,6 +3,7 @@ from libs.mcserversubprocess import MCServerSubprocess
 import json
 import os
 import subprocess
+import requests
 
 FILE_SERVERS_LOCATION = "servers.json"
 FILE_CONFIG_LOCATION = "config.json"
@@ -20,11 +21,19 @@ def loadServers():
     with open(FILE_SERVERS_LOCATION) as file:
         json_object = json.load(file)
         for index, server in enumerate(json_object["servers"]):
-            servers.append(MCServer(index=index, name=server["server_name"], ip_addr=server["hostname"], port=server["port"] ,rcon_port=server["rcon_port"], rcon_passwd=server["rcon_password"], max_ram=server["max_ram"]))
+            servers.append(MCServer(index=index, name=server["server_name"], max_ram=server["max_ram"]))
     
     return servers
 
 loaded_servers = loadServers()
+
+def refreshLoadedServers():
+    """
+    Refreshes all commonly used variables. (`loaded_servers`)
+    Required after big changes, like modifying `config.json` or `servers.json`.
+    """
+    global loaded_servers
+    loaded_servers = loadServers()
 
 def getServerExecutablePath(index):
     """
@@ -114,6 +123,66 @@ def stopAllServers():
     """
     for mcserver_subprocess in mcserver_subprocesses:
         mcserver_subprocess.terminate()
+
+def newServer(name, version, software, max_ram):
+    """
+    Creates a new server.
+    """
+    if software == "paper":
+        # Get the latest release for the selected version
+        builds = requests.get(f"https://api.papermc.io/v2/projects/paper/versions/{version}")
+        
+        if builds.status_code == 400:
+            return (False, "bad request")
+
+        builds = builds.json()
+
+        if "error" in builds: return (False, "version not found")
+
+        latest_build = builds["builds"][-1]
+
+        cwd = os.getcwd()
+
+        # Download the latest release of the version selected
+        response = requests.get(f"https://api.papermc.io/v2/projects/paper/versions/{version}/builds/{latest_build}/downloads/paper-{version}-{latest_build}.jar")
+        
+        if response.status_code == 400:
+            return (False, "bad request")
+        
+        # FIXME: error happens here.
+        if "error" in response.json(): return (False, "version not found")
+
+        try:
+            os.mkdir(f"servers/{name}")
+            os.chdir(f"servers/{name}")
+        except:
+            return (False, "couldn't create/switch to the server directory")
+        
+        open("server.jar", "wb").write(response.content)
+
+        os.chdir(cwd)
+
+        # Adds the server to the servers.json folder
+        new_data = {"server_name": name, "max_ram": max_ram}
+
+        # Add server to servers.json file.
+        try:
+            with open('servers.json', "r+") as file:
+                servers = json.load(file)
+                servers["servers"].append(new_data)
+
+                file.seek(0)
+
+                json.dump(servers, file, indent=4)
+        except:
+            return (False, "couldn't write to servers.json")
+        
+        # Refresh loaded_servers.
+        refreshLoadedServers()
+
+        return True
+    else:
+        return False
 
 def returnAPIError(description=None):
     """

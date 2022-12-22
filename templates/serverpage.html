@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<h1><code>server/{{ server.name }}:{{ server.port }}</code></h1>
+<h1><code>server/{{ server.name }}</code></h1>
 <div class="d-flex flex-row gap-4">
     <form action="{{ url_for('api_startServer', index=server.index) }}" method="post">
         <button type="submit" class="btn btn-success d-inline-flex flex-row justify-content-center align-items-center gap-2">

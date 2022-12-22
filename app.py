@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError
+from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer
 import atexit
 
 app = Flask(__name__)
@@ -22,6 +22,9 @@ def index():
 def server_page(index):
     return render_template("serverpage.html", server=loaded_servers[index])
 
+@app.route("/new-server")
+def new_server_page():
+    return render_template("newserver.html")
 
 # Servers API
 # /api/server/<int:index>/<start|stop>
@@ -49,6 +52,24 @@ def api_sendCommand(index):
     if success == False: return returnAPIError("server not found")
 
     return {"result": True}
+
+# /api/server/new
+# POST Data: {"name": "mcserver", "software": "paper", "version": "1.19.3", "max-ram": "2G"}
+@app.route("/api/server/new", methods=["POST"])
+def api_createNewServer():
+    # Check if required post data exists.
+    if not "name" in request.form: return returnAPIError("name not specified")
+    if not "version" in request.form: return returnAPIError("version not specified")
+    if not "software" in request.form: return returnAPIError("server software not specified")
+    if not "max-ram" in request.form: return returnAPIError("max ram not provided")
+
+    # Try to create a new server.
+    success = newServer(name=request.form["name"], max_ram=request.form["max-ram"], software=request.form["software"], version=request.form["version"])
+    
+    if isinstance(success, tuple):
+        return returnAPIError(success[1])
+
+    return {"result": success} 
 
 # Register shutdown() function.
 atexit.register(shutdown)

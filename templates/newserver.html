@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block head %}
+<script defer src="{{ url_for('static', filename='newserver.js') }}"></script>
+{% endblock %}
+{% block content %}
+<h1>Setup new server.</h1>
+<form action="{{ url_for('api_createNewServer') }}" method="post">
+    <div class="mb-3">
+        <label for="serverName" class="form-label">Server name</label>
+        <input type="text" name="name" class="form-control" id="serverName" aria-describedby="serverNameHelp" required>
+        <div id="serverNameHelp" class="form-text">This name will be used as name for server's directory and it will be added to <code>servers.json</code> file.</div>
+    </div>
+    <div class="mb-3">
+        <label for="serverSoftwareSelect" class="form-label">Server software</label>
+        <select name="software" value="paper" id="serverSoftwareSelect" class="form-select" aria-describedby="serverSoftwareSelectHelp">
+            <option selected value="paper">Paper</option>
+            <option value="vanilla">Vanilla</option>
+            <option value="craftbukkit">CraftBukkit</option>
+            <option value="spigot">Spigot</option>
+        </select>
+        <div id="serverSoftwareSelectHelp" class="form-text">Vanilla is the minecraft's original server software. Server wrapper in current stage only supports Paper server software.</div>
+    </div>
+    <div class="mb-3">
+        <label for="minecraftVersionSelect" class="form-label">Minecraft version</label>
+        <select name="version" id="minecraftVersionSelect" class="form-select" aria-describedby="minecraftVersionSelectHelp"></select>
+        <div id="minecraftVersionSelectHelp" class="form-text">Latest supported minecraft version is 1.19.3.</div>
+    </div>
+    <input type="hidden" name="max-ram" value="2G">
+    <input type="submit" value="Create new server">
+</form>
+{% endblock %}
