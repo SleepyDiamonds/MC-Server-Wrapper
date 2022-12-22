@@ -15,5 +15,20 @@
             Shutdown Server
         </button>
     </form>
+
+    
 </div>
+<div class="container mt-4"></div>
+    <form action="{{ url_for('api_sendCommand', index=server.index) }}" method="post">
+        <div class="row">
+            <div class="col">
+                <input type="text" name="command" class="form-control" id="floatingInputGrid" placeholder="/give SuperDiamondHD minecraft:diamonds 64">
+            </div>
+            <div class="col col-lg-2">
+                <button type="submit" class="btn btn-primary" value="Submit">Execute!</button>
+            </div>
+        </div>
+    </form>
+</div>
+
 {% endblock %}
