@@ -150,7 +150,7 @@ def newServer(name, version, software, max_ram):
             return (False, "bad request")
         
         # FIXME: error happens here.
-        if "error" in response.json(): return (False, "version not found")
+        if "error" in response: return (False, "version not found")
 
         try:
             os.mkdir(f"servers/{name}")
