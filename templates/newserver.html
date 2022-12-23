@@ -7,7 +7,7 @@
 <form action="{{ url_for('api_createNewServer') }}" method="post">
     <div class="mb-3">
         <label for="serverName" class="form-label">Server name</label>
-        <input type="text" name="name" class="form-control" id="serverName" aria-describedby="serverNameHelp" required>
+        <input type="text" pattern="^(\w+\.?)*\w+$" name="name" class="form-control" id="serverName" aria-describedby="serverNameHelp" required>
         <div id="serverNameHelp" class="form-text">This name will be used as name for server's directory and it will be added to <code>servers.json</code> file.</div>
     </div>
     <div class="mb-3">
@@ -25,7 +25,13 @@
         <select name="version" id="minecraftVersionSelect" class="form-select" aria-describedby="minecraftVersionSelectHelp"></select>
         <div id="minecraftVersionSelectHelp" class="form-text">Latest supported minecraft version is 1.19.3.</div>
     </div>
+    <div class="mb-3">
+        <input class="form-check-input" type="checkbox" value="" id="eulaCheckbox" aria-describedby="eulaCheckboxHelp">
+        <label for="eulaCheckbox" class="form-check-label">Accept EULA Agreement</label>
+        <div id="eulaCheckboxHelp" class="form-text">By ticking above checkbox you are indicating your agreement to the <a href="https://aka.ms/MinecraftEULA" class="text-muted">Minecraft&trade; EULA.</a></div>
+    </div>
     <input type="hidden" name="max-ram" value="2G">
-    <input type="submit" value="Create new server">
+    <!-- By default, submit button is disabled until user accepts Minecraft EULA. -->
+    <input type="submit" id="submitButton" class="btn btn-primary" value="Create new server" disabled>
 </form>
 {% endblock %}

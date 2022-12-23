@@ -1,4 +1,6 @@
 const versionSelectElement = document.getElementById("minecraftVersionSelect");
+const eulaCheckboxElement = document.getElementById("eulaCheckbox");
+const submitButtonElement = document.getElementById("submitButton");
 
 // https://api.papermc.io/docs/swagger-ui/index.html?configUrl=/openapi/swagger-config
 // Fetch latest available minecraft versions (https://api.papermc.io/v2/projects/paper).
@@ -30,7 +32,6 @@ async function updateForm() {
     // Select latest version by default.
     const latestVersion = paperVersions[paperVersions.length - 1];
     versionSelectElement.value = latestVersion;
-    console.log(latestVersion);
 
     paperVersions.forEach((version) => {
         const option = document.createElement("option");
@@ -40,4 +41,14 @@ async function updateForm() {
     });
 }
 
+// Update form.
 updateForm();
+
+// Check if user accepted Minecraft EULA.
+eulaCheckboxElement.addEventListener("change", (event) => {
+    if (event.currentTarget.checked) {
+        submitButtonElement.disabled = false;
+    } else {
+        submitButtonElement.disabled = true;
+    }
+});
