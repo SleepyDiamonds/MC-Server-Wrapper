@@ -2,6 +2,7 @@ from libs.mcserver import MCServer
 from libs.mcserversubprocess import MCServerSubprocess
 import json
 import os
+import shutil
 import subprocess
 import requests
 
@@ -87,8 +88,8 @@ def getMCServerSubprocess(index):
 def sendCommand(index, command):
     """
     Send command to minecraft server.
-    Returns False if server's subprocess has not been found, otherwise
-    it returns True.
+    Returns `False` if server's subprocess has not been found, otherwise
+    it returns `True`.
     """
     mcserver_subprocess = getMCServerSubprocess(index)
 
@@ -127,6 +128,8 @@ def stopAllServers():
 def newServer(name, version, software, max_ram):
     """
     Creates a new server.
+    Returns `True` if new server has been successfully created.
+    Otherwise, returns a tuple with `False` and error description.
     """
     if software == "paper":
         # Get the latest release for the selected version
@@ -149,7 +152,6 @@ def newServer(name, version, software, max_ram):
         if response.status_code == 400:
             return (False, "bad request")
         
-        # FIXME: error happens here.
         if "error" in response: return (False, "version not found")
 
         try:
@@ -182,6 +184,38 @@ def newServer(name, version, software, max_ram):
 
         return True
     else:
+        return False
+
+def deleteServer(index):
+    """
+    Deletes a server.
+    Returns `True` if server has been successfully deleted,
+    otherwise `False`.
+    """
+    try:
+        server_name = loaded_servers[index].name
+
+        # Remove server's folder and its contents.
+        shutil.rmtree(f"servers/{server_name}")
+
+        # Remove server from servers.json
+        with open('servers.json', "r+") as file:
+            servers = json.load(file)
+            servers["servers"].pop(index)
+
+            # Resets server.json file.
+            file.seek(0)
+            file.truncate()
+
+            # Writes to server.json file, with
+            # specified server excluded.
+            json.dump(servers, file, indent=4)
+
+        # Refresh loaded_servers.
+        refreshLoadedServers()
+
+        return True
+    except:
         return False
 
 def returnAPIError(description=None):

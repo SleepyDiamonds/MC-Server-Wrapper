@@ -3,14 +3,6 @@
         {
             "server_name": "mcserver",
             "max_ram": "2G"
-        },
-        {
-            "server_name": "test",
-            "max_ram": "2G"
-        },
-        {
-            "server_name": "sleepysmp",
-            "max_ram": "2G"
         }
     ]
 }

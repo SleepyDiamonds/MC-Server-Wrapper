@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer
+from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer, deleteServer
 import atexit
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ def new_server_page():
     return render_template("newserver.html")
 
 # Servers API
-# /api/server/<int:index>/<start|stop>
+# POST /api/server/<int:index>/<start|stop>
 @app.route("/api/server/<int:index>/start", methods=["POST"])
 def api_startServer(index):
     success = startServer(index)
@@ -38,7 +38,7 @@ def api_stopServer(index):
     success = stopServer(index)
     return {"result": success}
 
-# /api/server/<int:index>/command
+# POST /api/server/<int:index>/command
 # POST Data: {"command": <string:command>}
 @app.route("/api/server/<int:index>/command", methods=["POST"])
 def api_sendCommand(index):
@@ -53,7 +53,7 @@ def api_sendCommand(index):
 
     return {"result": True}
 
-# /api/server/new
+# POST /api/server/new
 # POST Data: {"name": "mcserver", "software": "paper", "version": "1.19.3", "max-ram": "2G"}
 @app.route("/api/server/new", methods=["POST"])
 def api_createNewServer():
@@ -69,7 +69,13 @@ def api_createNewServer():
     if isinstance(success, tuple):
         return returnAPIError(success[1])
 
-    return {"result": success} 
+    return {"result": success}
+
+# POST /api/server/<int:index>/delete
+@app.route("/api/server/<int:index>/delete", methods=["POST"])
+def api_deleteServer(index):
+    success = deleteServer(index)
+    return {"result": success}
 
 # Register shutdown() function.
 atexit.register(shutdown)

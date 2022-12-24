@@ -5,14 +5,14 @@
     <form action="{{ url_for('api_startServer', index=server.index) }}" method="post">
         <button type="submit" class="btn btn-success d-inline-flex flex-row justify-content-center align-items-center gap-2">
             <i class="bi bi-power"></i>
-            Start Server
+            Start
         </button>
     </form>
 
     <form action="{{ url_for('api_stopServer', index=server.index) }}" method="post">
         <button type="submit" class="btn btn-danger d-inline-flex flex-row justify-content-center align-items-center gap-2">
             <i class="bi bi-stop-circle"></i>
-            Shutdown Server
+            Shutdown
         </button>
     </form> 
 </div>
@@ -27,6 +27,15 @@
                 <button type="submit" class="btn btn-primary">Execute!</button>
             </div>
         </div>
+    </form>
+</div>
+
+<div class="container mt-4"></div>
+    <form action="{{ url_for('api_deleteServer', index=server.index) }}" method="post">
+        <button type="submit" class="btn btn-outline-danger">
+            <i class="bi bi-trash-fill"></i>
+            Delete Server
+        </button>
     </form>
 </div>
 
