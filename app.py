@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer, deleteServer
+from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer, deleteServer, getServerSettings, changeServerSettings
 import atexit
 
 app = Flask(__name__)
@@ -76,6 +76,24 @@ def api_createNewServer():
 def api_deleteServer(index):
     success = deleteServer(index)
     return {"result": success}
+
+# API for returning the server.properties in a dictonary
+@app.route("/api/server/<int:index>/getSettings", methods=["POST"])
+def api_getServerSettings(index):
+    response = getServerSettings(index)
+    return response
+
+# Loads the server settings panel
+@app.route("/server/<int:index>/settings")
+def showServerSettings(index):
+    server_properties = getServerSettings(index)
+    return render_template("serversettings.html", index=index, server=loaded_servers, server_properties=server_properties)
+
+# Changes the server.properties file
+@app.route("/api/server/<int:index>/changeSettings", methods=["POST"])
+def api_changeServerSettings(index):
+    success = changeServerSettings(index, request.form.to_dict())
+    return {"result":success}
 
 # Register shutdown() function.
 atexit.register(shutdown)
