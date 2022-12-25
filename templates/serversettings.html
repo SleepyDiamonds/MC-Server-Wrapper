@@ -7,7 +7,7 @@
 <p>Modify the <code>server.properties</code> file of {{ server[index].name }}</p>
 <br>
 
-<form action="{{ url_for('api_changeServerSettings', index=index) }}" method="post" id="formElement">
+<form action="{{ url_for('api_updateServerSettings', index=index) }}" method="post" id="formElement">
     {% for name, value in server_properties.items() %}
         {% if value == 'true' %}
             <div class="form-check form-switch">
@@ -23,8 +23,8 @@
             <input type="text" class="form-control" id="floatingInputGroup1" placeholder="{{ name }}" name="{{ name }}" value="{{ value }}">
             <p>{{ name }}</p>
         {% endif %}
-{% endfor %}
-<input type="submit" value="Save Changes" class="btn btn-success" id="submitButton">
+    {% endfor %} 
+    <input type="submit" value="Save Changes" class="btn btn-success" id="submitButton">
 </form>
 
 <script>
@@ -33,10 +33,12 @@
     document.getElementById("submitButton").addEventListener("click", function(e){
         Array.from(checkBoxes).forEach((checkbox) => {
             if(!(checkbox.checked)){
-                const para = document.createElement("input");
-                para.name = checkbox.name;
-                para.value = "false";
-                formElement.appendChild(para)
+                console.log(checkbox.name)
+                const newElement = document.createElement("input");
+                newElement.name = checkbox.name;
+                newElement.type = "hidden";
+                newElement.value = "false"; 
+                formElement.appendChild(newElement);
             }
         });
     })

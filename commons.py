@@ -157,12 +157,12 @@ def newServer(name, version, software, max_ram):
         try:
             os.mkdir(f"servers/{name}")
             os.chdir(f"servers/{name}")
-            with open("eula.txt", "w") as file:
-                file.write("eula=true")
         except:
             return (False, "couldn't create/switch to the server directory")
         
         open("server.jar", "wb").write(response.content)
+
+        server_subprocess = subprocess.Popen(JVM_STARTUP_FLAGS % (max_ram, max_ram), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
 
         os.chdir(cwd)
 

@@ -22,9 +22,16 @@ def index():
 def server_page(index):
     return render_template("serverpage.html", server=loaded_servers[index])
 
+# Loads the server settings panel
+@app.route("/server/<int:index>/settings")
+def showServerSettings(index):
+    server_properties = getServerSettings(index)
+    return render_template("serversettings.html", index=index, server=loaded_servers, server_properties=server_properties)
+
 @app.route("/new-server")
 def new_server_page():
     return render_template("newserver.html")
+
 
 # Servers API
 # POST /api/server/<int:index>/<start|stop>
@@ -77,21 +84,17 @@ def api_deleteServer(index):
     success = deleteServer(index)
     return {"result": success}
 
+# GET /api/server/<int:index>/settings
 # API for returning the server.properties in a dictonary
-@app.route("/api/server/<int:index>/getSettings", methods=["POST"])
+@app.route("/api/server/<int:index>/settings", methods=["GET"])
 def api_getServerSettings(index):
     response = getServerSettings(index)
     return response
 
-# Loads the server settings panel
-@app.route("/server/<int:index>/settings")
-def showServerSettings(index):
-    server_properties = getServerSettings(index)
-    return render_template("serversettings.html", index=index, server=loaded_servers, server_properties=server_properties)
-
+# POST /api/server/<int:index>/updateSettings
 # Changes the server.properties file
-@app.route("/api/server/<int:index>/changeSettings", methods=["POST"])
-def api_changeServerSettings(index):
+@app.route("/api/server/<int:index>/updateSettings", methods=["POST"])
+def api_updateServerSettings(index):
     success = changeServerSettings(index, request.form.to_dict())
     return {"result":success}
 
