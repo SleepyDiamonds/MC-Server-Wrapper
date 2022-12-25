@@ -222,7 +222,7 @@ def deleteServer(index):
 
 def getServerSettings(index):
     """
-    Load the server.properties file from the request server and returns it in a dictonary
+    Loads the server.properties file from the request server and returns it in a dictonary.
     """
     try:
         properties_file = open(f"servers/{loaded_servers[index].name}/server.properties").readlines()
@@ -238,7 +238,6 @@ def getServerSettings(index):
             settingsList.append(item)
 
     server_properties = {}
-    server_property = []
 
     for item in settingsList:
         server_property = item.split("=")
@@ -248,13 +247,12 @@ def getServerSettings(index):
         # Removes \n in the lines
         server_property[1] = server_property[1].rstrip()
 
-        # True or "True" have to be converted to "true" (same for false)
+        # "True" has to be converted to True (same for false),
         # because the settings page on the client accepts only lowercase true & false
-        if server_property[1] == "True":
-            server_property[1] = "true"
-        elif server_property[1] == "False":
-            server_property[1] = "false"
-
+        # if server_property[1] == "true":
+        #     server_property[1] = True
+        # elif server_property[1] == "false":
+        #     server_property[1] = False
 
         server_properties[server_property[0]] = server_property[1]
 
