@@ -157,6 +157,8 @@ def newServer(name, version, software, max_ram):
         try:
             os.mkdir(f"servers/{name}")
             os.chdir(f"servers/{name}")
+            with open("eula.txt", "w") as file:
+                file.write("eula=true")
         except:
             return (False, "couldn't create/switch to the server directory")
         
@@ -217,6 +219,72 @@ def deleteServer(index):
         return True
     except:
         return False
+
+def getServerSettings(index):
+    """
+    Load the server.properties file from the request server and returns it in a dictonary
+    """
+    try:
+        properties_file = open(f"servers/{loaded_servers[index].name}/server.properties").readlines()
+    except:
+        return (False, "server not found")
+
+    settingsList = []
+
+    for item in properties_file:
+        if item[0] == "#":
+            continue
+        else:
+            settingsList.append(item)
+
+    server_properties = {}
+    server_property = []
+
+    for item in settingsList:
+        server_property = item.split("=")
+        if server_property[0] == "\n":
+            continue
+
+        # Removes \n in the lines
+        server_property[1] = server_property[1].rstrip()
+
+        # True or "True" have to be converted to "true" (same for false)
+        # because the settings page on the client accepts only lowercase true & false
+        if server_property[1] == "True":
+            server_property[1] = "true"
+        elif server_property[1] == "False":
+            server_property[1] = "false"
+
+
+        server_properties[server_property[0]] = server_property[1]
+
+    return server_properties
+
+def changeServerSettings(index, settings):
+    """
+    Changes the server.properties file of the index server
+    """
+    newSettings = {}
+    with open(f"servers/{loaded_servers[index].name}/server.properties", "w") as file:
+        final_string = ""
+
+        # True or "True" have to be converted to "true" (same for false)
+        # because Java only accepts lovercase true & false
+        for item in settings.keys():
+            if settings[item] == True:
+                newSettings[item] = "true"
+            if settings[item] == False:
+                newSettings[item] = "false"
+            else:
+                newSettings[item] = settings[item]
+
+            # Add everything to the final string
+            # that will be written to the file
+            final_string = final_string + item + "=" + newSettings[item] + "\n"
+        
+        # Write to the file and return
+        file.write(final_string)
+        return True
 
 def returnAPIError(description=None):
     """
