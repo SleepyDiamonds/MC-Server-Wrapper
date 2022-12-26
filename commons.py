@@ -144,8 +144,6 @@ def newServer(name, version, software, max_ram):
 
         latest_build = builds["builds"][-1]
 
-        cwd = os.getcwd()
-
         # Download the latest release of the version selected
         response = requests.get(f"https://api.papermc.io/v2/projects/paper/versions/{version}/builds/{latest_build}/downloads/paper-{version}-{latest_build}.jar")
         
@@ -153,6 +151,8 @@ def newServer(name, version, software, max_ram):
             return (False, "bad request")
         
         if "error" in response: return (False, "version not found")
+
+        cwd = os.getcwd()
 
         try:
             os.mkdir(f"servers/{name}")
@@ -162,8 +162,25 @@ def newServer(name, version, software, max_ram):
         
         open("server.jar", "wb").write(response.content)
 
-        # TODO: Make this work.
+        # Open server.jar file to setup server.
         server_subprocess = subprocess.Popen(JVM_STARTUP_FLAGS % (max_ram, max_ram), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+        server_subprocess.wait()
+
+        # Set eula to true now.
+        try:
+            eula_file = open("eula.txt", "r")
+            eula_content = eula_file.read()
+            eula_file.close()
+
+            eula_content = eula_content.replace("eula=false", "eula=true")
+
+            # Opening file with "w" mode truncates it
+            # automatically.
+            eula_file = open("eula.txt", "w")
+            eula_file.write(eula_content)
+            eula_file.close()
+        except:
+            return (False, "couldn't find eula.txt file")
 
         os.chdir(cwd)
 
