@@ -60,7 +60,7 @@ def startServer(index):
 
         server_subprocess = subprocess.Popen(JVM_STARTUP_FLAGS % (server_ram, server_ram), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         
-        mcserver_subprocesses.append(MCServerSubprocess(server_index=index, subprocess=server_subprocess))
+        mcserver_subprocesses.append(MCServerSubprocess(server=loaded_servers[index], subprocess=server_subprocess))
 
         # Go back to the main directory
         os.chdir(cwd)

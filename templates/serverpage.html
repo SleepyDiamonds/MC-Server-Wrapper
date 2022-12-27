@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block head %}
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script defer src="{{ url_for('static', filename='serverpage.js') }}"></script>
+{% endblock %}
 {% block content %}
 <h1><code>server/{{ server.name }}</code></h1>
 <div class="d-flex flex-row gap-4">
@@ -17,7 +21,7 @@
     </form> 
 </div>
 
-<div class="mt-4 p-2 container bg-black text-white rounded" style="height: 400px;">Console View</div>
+<div class="mt-4 p-2 container bg-black text-white rounded" style="height: 400px;" id="console">Console View</div>
 
 <div class="container mt-4"></div>
     <form action="{{ url_for('api_sendCommand', index=server.index) }}" method="post">

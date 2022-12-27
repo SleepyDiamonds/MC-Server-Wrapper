@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request
 from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer, deleteServer, getServerSettings, changeServerSettings
 import atexit
+from flask_socketio import SocketIO, send
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 @app.before_first_request
 def startup():
@@ -98,8 +100,14 @@ def api_updateServerSettings(index):
     success = changeServerSettings(index, request.form.to_dict())
     return {"result":success}
 
+
+### SocketIO
+@socketio.on("connect", namespace="/logs")
+def socketio_logs_connect():
+    send("lastlogs")
+
 # Register shutdown() function.
 atexit.register(shutdown)
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    socketio.run(app, port=5000, debug=True)

@@ -1,7 +1,10 @@
+from .logmanager import LogManager
+
 class MCServerSubprocess():
-    def __init__(self, server_index, subprocess):
-        self.server_index = server_index
+    def __init__(self, server, subprocess):
+        self.server = server
         self.subprocess = subprocess
+        self.log_manager = LogManager(server.index)
 
     def terminate(self):
         """
