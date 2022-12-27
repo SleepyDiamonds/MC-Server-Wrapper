@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer, deleteServer, getServerSettings, changeServerSettings
 import atexit
 from flask_socketio import SocketIO, send
+from libs import LogManager
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -98,13 +99,25 @@ def api_getServerSettings(index):
 @app.route("/api/server/<int:index>/updateSettings", methods=["POST"])
 def api_updateServerSettings(index):
     success = changeServerSettings(index, request.form.to_dict())
-    return {"result":success}
+    return {"result": success}
 
+# GET /api/server/<int:index>/oldLogs/<int:count>
+@app.route("/api/server/<int:index>/oldLogs/<int:count>", methods=["GET"])
+def api_getOldLogs(index, count):
+    result = LogManager.read_old_logs_index(index, count) 
+    
+    if isinstance(result, bool) and result[0] == False:
+        return returnAPIError(result[1])
+    else:
+        return {"result": result[0], "logs": result[1]}
 
 ### SocketIO
 @socketio.on("connect", namespace="/logs")
-def socketio_logs_connect():
-    send("lastlogs")
+def socketio_logs_connect(index):
+    # On connect, send latest logs to the client.
+    send("lastlogs", ["[INFO] SuperDiamondHD: hello world!", "[INFO] SleepyŠleper: HAIII (roblox)"])
+
+# mcserver_subprocess
 
 # Register shutdown() function.
 atexit.register(shutdown)

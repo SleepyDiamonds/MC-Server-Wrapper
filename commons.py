@@ -41,7 +41,14 @@ def getServerExecutablePath(index):
     Returns server executable path, for example: `servers/devserver/server.jar`
     """
     return "server/" + loaded_servers[index].name + "/server.jar"
-    
+
+def getServerByIndex(index):
+    """
+    Returns server object from index.
+    (looks up in `loaded_servers` for `MCServer` object at `index`)
+    """
+    return loaded_servers[index]
+
 def startServer(index):
     """
     Starts the server according to the index provided.

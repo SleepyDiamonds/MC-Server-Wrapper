@@ -21,7 +21,7 @@
     </form> 
 </div>
 
-<div class="mt-4 p-2 container bg-black text-white rounded" style="height: 400px;" id="console">Console View</div>
+<div class="mt-4 p-2 container bg-black text-white rounded" style="height: 400px;" id="console" data-server-index="{{ server.index }}"></div>
 
 <div class="container mt-4"></div>
     <form action="{{ url_for('api_sendCommand', index=server.index) }}" method="post">
