@@ -1,5 +1,5 @@
 const consoleElement = document.getElementById("console");
-const serverIndex = consoleElement.getAttribute("data-server-index");
+const serverIndex = parseInt(consoleElement.getAttribute("data-server-index"));
 
 function createLine(text) {
     const line = document.createElement("p");
@@ -19,7 +19,7 @@ function pushLineAtStart(text) {
 }
 
 async function fetchOldLogs() {
-    const response = await fetch(`${location.protocol}//${location.host}/api/server/${serverIndex}/oldLogs/0`) //my bad -sš
+    const response = await fetch(`${location.protocol}//${location.host}/api/server/${serverIndex}/oldLogs/0`)
         .then((response) => response.json())
         .then((json) => { return json });
     const success = response["result"];
@@ -34,8 +34,11 @@ function showOldLogs() {
     fetchLatestLogs().then((latestLogs) => latestLogs.forEach((line) => pushLine(line)));
 }
 
+// Initialize SocketIO
 const socket = io(`ws://${location.host}/logs`);
-socket.on("connect", (logs) => {
-    // On connect, client gets logs.
+
+socket.emit("request-last-logs", serverIndex);
+
+socket.on("last-logs", (logs) => {
     logs.forEach((log) => pushLine(log));
 });

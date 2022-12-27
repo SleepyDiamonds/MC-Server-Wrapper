@@ -15,7 +15,7 @@
 <h2>Subprocesses running:</h2>
 <ul>
     {% for subprocess in subprocesses %}
-    <li><code>({{ loop.index0 }}|PROCESS) server_index: {{ subprocess.server_index }}</code></li>
+    <li><code>({{ loop.index0 }}|PROCESS) server.index: {{ subprocess.server.index }}</code></li>
     {% endfor %}
 </ul>
 {% endblock %}

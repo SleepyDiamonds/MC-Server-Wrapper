@@ -55,8 +55,9 @@ def startServer(index):
     Returns `True` or `False`, depending if any errors occured.
     """
     try:
-        server_name = loaded_servers[index].name
-        server_ram = loaded_servers[index].max_ram
+        server = getServerByIndex(index)
+        server_name = server.name
+        server_ram = server.max_ram
         
         # Starts the server with provided Maximum RAM from the config
         # cd servers/mcserver
@@ -67,7 +68,7 @@ def startServer(index):
 
         server_subprocess = subprocess.Popen(JVM_STARTUP_FLAGS % (server_ram, server_ram), stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         
-        mcserver_subprocesses.append(MCServerSubprocess(server=loaded_servers[index], subprocess=server_subprocess))
+        mcserver_subprocesses.append(MCServerSubprocess(server=server, subprocess=server_subprocess))
 
         # Go back to the main directory
         os.chdir(cwd)
@@ -85,7 +86,7 @@ def getMCServerSubprocess(index):
     it will return `None`.
     """
     for mcserver_subprocess in mcserver_subprocesses:
-        if mcserver_subprocess.server_index == index:
+        if mcserver_subprocess.server.index == index:
             # Server is found, return it.
             return mcserver_subprocess
     

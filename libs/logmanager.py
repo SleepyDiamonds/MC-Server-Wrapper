@@ -1,7 +1,7 @@
 import commons
 
 class LogManager():
-    def __init__(self, mc_subprocess, max_read_lines):
+    def __init__(self, mc_subprocess, max_read_lines=25):
         self.mc_subprocess = mc_subprocess
         self.server_index = mc_subprocess.server.index
         self.server_name = mc_subprocess.server.name
@@ -11,7 +11,7 @@ class LogManager():
         """
         Reads latest logs from `stdout`.
         """
-        line = self.subprocess.stdout.readline()
+        line = self.mc_subprocess.subprocess.stdout.readline()
         print(line)
 
     # [info] hello  <----- last_loaded_line -- 3

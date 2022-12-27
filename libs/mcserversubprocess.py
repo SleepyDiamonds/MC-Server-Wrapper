@@ -4,7 +4,7 @@ class MCServerSubprocess():
     def __init__(self, server, subprocess):
         self.server = server
         self.subprocess = subprocess
-        self.log_manager = LogManager(server.index)
+        self.log_manager = LogManager(self)
 
     def terminate(self):
         """

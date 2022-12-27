@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
-from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer, deleteServer, getServerSettings, changeServerSettings
+from commons import loaded_servers, startServer, stopServer, mcserver_subprocesses, sendCommand, returnAPIError, newServer, deleteServer, getServerSettings, changeServerSettings, getMCServerSubprocess
 import atexit
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
 from libs import LogManager
 
 app = Flask(__name__)
@@ -111,13 +111,20 @@ def api_getOldLogs(index, count):
     else:
         return {"result": result[0], "logs": result[1]}
 
-### SocketIO
-@socketio.on("connect", namespace="/logs")
-def socketio_logs_connect(index):
-    # On connect, send latest logs to the client.
-    send("lastlogs", ["[INFO] SuperDiamondHD: hello world!", "[INFO] SleepyŠleper: HAIII (roblox)"])
 
-# mcserver_subprocess
+### SocketIO
+# When client connects, send him latest logs.
+@socketio.on("request-last-logs", namespace="/logs")
+def socketio_logs_connect(index: int):
+    try:
+        # Server is running, show latest logs.
+        mcserver_subprocess = getMCServerSubprocess(index)
+        logs = mcserver_subprocess.log_manager.read_last_logs()
+        print(logs)
+        emit("last-logs", ["test"])
+    except:
+        # Server is not running.
+        pass
 
 # Register shutdown() function.
 atexit.register(shutdown)
