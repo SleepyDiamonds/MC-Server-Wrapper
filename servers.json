@@ -1,8 +1,0 @@
-{
-    "servers": [
-        {
-            "server_name": "mcserver",
-            "max_ram": "2G"
-        }
-    ]
-}
