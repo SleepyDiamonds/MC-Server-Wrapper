@@ -1,2 +1,4 @@
-# MC-Server-Wrapper
-Minecraft Server Wrapper made by SleepyDiamonds
+# Minecraft Server Wrapper
+
+Minecraft server wrapper currently in construction,
+made in Java with Spring framework.
